@@ -1,3 +1,5 @@
+let s:cursor_position = {}
+
 function! file_explorer#OpenFileExplorer(path)
     let s:file_browser_pwd = a:path
 
@@ -38,14 +40,25 @@ function! file_explorer#UpdateBuffer(dir)
     silent put! = files
     normal gg
     setlocal nomodifiable
+
+    if has_key(s:cursor_position, s:file_browser_pwd)
+        " 以前いたカーソル位置へ移動
+        let position = search(s:cursor_position[s:file_browser_pwd])
+        call cursor(position, 0)
+    endif
 endfunction
 
 function! file_explorer#MoveUpperDirectory()
+    " カーソル位置を更新
+    let s:cursor_position[s:file_browser_pwd] = getline('.')
+
     call file_explorer#UpdateBuffer('..')
 endfunction
 
 function! file_explorer#OpenFileOrDirectory()
+    " カーソル位置を更新
     let target = getline('.')
+    let s:cursor_position[s:file_browser_pwd] = target
     if isdirectory(s:file_browser_pwd . '\\' . target)
         call file_explorer#OpenDirectory(target)
     else
