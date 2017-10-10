@@ -31,7 +31,9 @@ function! file_explorer#UpdateBuffer(dir)
     if a:dir != ''
         let s:file_browser_pwd = fnamemodify(s:file_browser_pwd . '\\' . a:dir, ':p')
     endif
-    let fullpath_files = glob(s:file_browser_pwd . '/.*') . "\n" . glob(s:file_browser_pwd . '/*')
+    let fullpath_files = join(map(
+            \ glob(s:file_browser_pwd . '/.*', 1, 1) + glob(s:file_browser_pwd . '/*', 1, 1),
+            \ {i,p -> isdirectory(p) ? p . '/' : p }), "\n")
     let files = substitute(fullpath_files, substitute(s:file_browser_pwd . '\', '\\', '\\\\', 'g'), '', 'g')
     silent put! = files
     normal gg
@@ -52,7 +54,7 @@ function! file_explorer#OpenFileOrDirectory()
 endfunction
 
 function! file_explorer#OpenDirectory(target)
-    call file_explorer#UpdateBuffer(a:target)
+    call file_explorer#UpdateBuffer(a:target[0:-2])
 endfunction
 
 function! file_explorer#OpenFile(target)
