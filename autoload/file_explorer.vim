@@ -31,7 +31,7 @@ function! file_explorer#UpdateBuffer(dir)
     if a:dir != ''
         let s:file_browser_pwd = fnamemodify(s:file_browser_pwd . '\\' . a:dir, ':p')
     endif
-    let fullpath_files = glob(s:file_browser_pwd . '/*')
+    let fullpath_files = glob(s:file_browser_pwd . '/.*') . "\n" . glob(s:file_browser_pwd . '/*')
     let files = substitute(fullpath_files, substitute(s:file_browser_pwd . '\', '\\', '\\\\', 'g'), '', 'g')
     silent put! = files
     normal gg
