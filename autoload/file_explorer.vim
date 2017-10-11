@@ -83,3 +83,7 @@ function! file_explorer#LcdCurrent()
     execute ":lcd " . s:file_browser_pwd
 endfunction
 
+function! file_explorer#CreateFile()
+    let file_name = input("File Name: ")
+    execute ":e " . s:file_browser_pwd . '/' . file_name
+endfunction
