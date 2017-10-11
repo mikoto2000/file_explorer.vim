@@ -25,6 +25,7 @@ function! file_explorer#OpenFileExplorer(path)
     setlocal wrap
     setlocal nonumber
     setlocal filetype=file_explorer
+    ownsyntax netrw
 endfunction
 
 function! file_explorer#UpdateBuffer(dir)
