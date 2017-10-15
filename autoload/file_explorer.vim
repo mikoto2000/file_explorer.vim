@@ -1,7 +1,7 @@
 let s:cursor_position = {}
 
 function! file_explorer#OpenFileExplorer(path)
-    let s:file_browser_pwd = a:path
+    let s:file_browser_pwd = file_explorer#NormalizePath(a:path)
 
     " 呼び出し元のウィンドウ ID を記憶
     let s:caller_window_id = win_getid()
@@ -32,12 +32,13 @@ function! file_explorer#UpdateBuffer(dir)
     setlocal modifiable
     silent normal ggVGd
     if a:dir != ''
-        let s:file_browser_pwd = fnamemodify(s:file_browser_pwd . '\\' . a:dir, ':p')
+        let s:file_browser_pwd = file_explorer#NormalizePath(s:file_browser_pwd . a:dir)
     endif
     let fullpath_files = join(map(
             \ glob(s:file_browser_pwd . '/.*', 1, 1) + glob(s:file_browser_pwd . '/*', 1, 1),
             \ {i,p -> isdirectory(p) ? p . '/' : p }), "\n")
-    let files = substitute(fullpath_files, substitute(s:file_browser_pwd . '\', '\\', '\\\\', 'g'), '', 'g')
+    let files = substitute(fullpath_files, '\', '/', 'g')
+    let files = substitute(files, s:file_browser_pwd . '/', '', 'g')
     silent put! = files
     normal gg
     setlocal nomodifiable
@@ -60,7 +61,7 @@ function! file_explorer#OpenFileOrDirectory()
     " カーソル位置を更新
     let target = getline('.')
     let s:cursor_position[s:file_browser_pwd] = target
-    if isdirectory(s:file_browser_pwd . '\\' . target)
+    if isdirectory(s:file_browser_pwd . target)
         call file_explorer#OpenDirectory(target)
     else
         call file_explorer#OpenFile(target)
@@ -72,11 +73,11 @@ function! file_explorer#OpenDirectory(target)
 endfunction
 
 function! file_explorer#OpenFile(target)
-    execute 'e ' . s:file_browser_pwd . '/' . a:target
+    execute 'e ' . s:file_browser_pwd . a:target
 endfunction
 
 function! file_explorer#GetPath()
-    return substitute(s:file_browser_pwd . getline('.'), '\\', '\\\\', 'g')
+    return file_explorer#NormalizePath(s:file_browser_pwd . getline('.'))
 endfunction
 
 function! file_explorer#LcdCurrent()
@@ -85,5 +86,10 @@ endfunction
 
 function! file_explorer#CreateFile()
     let file_name = input("File Name: ")
-    execute ":e " . s:file_browser_pwd . '/' . file_name
+    execute ":e " . s:file_browser_pwd .  file_name
 endfunction
+
+function! file_explorer#NormalizePath(path)
+    return substitute(fnamemodify(a:path, ':p'), '\', '/', 'g')
+endfunction
+

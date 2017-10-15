@@ -1,0 +1,30 @@
+Describe Test for file_explorer
+  Before all
+    let V = vital#of('vital')
+    let PowerAssert = V.import('Vim.PowerAssert')
+    let s:assert = PowerAssert.assert
+  End
+
+  " TODO: 絶対パスのテストってどうするのが良いのですかね？検討する。
+  It test_NormalizePath
+    let path = file_explorer#NormalizePath("c:/Users/mikoto/file_explorer/")
+    execute s:assert('path is# "c:/Users/mikoto/file_explorer/"')
+
+    let path = file_explorer#NormalizePath("c:\\Users\\mikoto\\file_explorer\\")
+    execute s:assert('path is# "c:/Users/mikoto/file_explorer/"')
+  End
+
+  " TODO: 絶対パスのテストってどうするのが良いのですかね？検討する。
+  It test_GetPath
+    call file_explorer#OpenFileExplorer(getcwd())
+
+    call cursor(1, 1)
+    let path = file_explorer#GetPath()
+    execute s:assert('path is# "C:/Users/mikoto/project/file_explorer.vim/"')
+
+    call cursor(5, 1)
+    let path = file_explorer#GetPath()
+    execute s:assert('path is# "C:/Users/mikoto/project/file_explorer.vim/autoload/"')
+  End
+End
+
