@@ -24,6 +24,7 @@ noremap <Leader>e <Esc>:call file_explorer#OpenFileExplorer(getcwd())<Enter>
 - `<Return>`, `l` : カーソル下のファイルまたはフォルダを開きます
 - `h` : 一つ上のフォルダへ移動します
 - `c` : ファイルエクスプローラーで表示しているディレクトリをカレントディレクトリに設定します
+- '%' : ファイルエクスプローラーで表示中のディレクトリに新規ファイルを作成し、編集を開始します。
 
 
 License:
