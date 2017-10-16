@@ -89,6 +89,20 @@ function! file_explorer#CreateFile()
     execute ":e " . s:file_browser_pwd .  file_name
 endfunction
 
+function! file_explorer#ExecuteFile()
+    let target = file_explorer#GetPath()
+    if has('win32') || has('win64')
+        let execute_command = 'start'
+        let target = substitute(target, '/', '\', 'g')
+    elseif has('mac')
+        let execute_command = 'open'
+    else
+        let execute_command = 'xdg-open'
+    endif
+
+    silent execute '!' . execute_command . ' ' . target
+endfunction
+
 function! file_explorer#NormalizePath(path)
     return substitute(fnamemodify(a:path, ':p'), '\', '/', 'g')
 endfunction
