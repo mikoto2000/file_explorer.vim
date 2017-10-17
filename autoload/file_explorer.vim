@@ -89,6 +89,16 @@ function! file_explorer#CreateFile()
     execute ":e " . s:file_browser_pwd .  file_name
 endfunction
 
+function! file_explorer#CreateDirectory()
+    if exists("*mkdir")
+        let directory_name = input("Directory Name: ")
+        call mkdir(s:file_browser_pwd .  directory_name)
+        call file_explorer#UpdateBuffer('')
+    else
+        echo "This system is not supported mkdir."
+    endif
+endfunction
+
 function! file_explorer#ExecuteFile()
     let target = file_explorer#GetPath()
     if has('win32') || has('win64')
