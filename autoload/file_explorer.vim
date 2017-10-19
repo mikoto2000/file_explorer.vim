@@ -99,11 +99,47 @@ function! file_explorer#CreateDirectory()
     endif
 endfunction
 
+function! file_explorer#ToWindowsPath(path)
+    return substitute(a:path, '/', '\', 'g')
+endfunction
+
+function! file_explorer#Copy(sources, dest)
+    if a:dest == ''
+        echo 'file_explorer: dest is empty.'
+        return
+    endif
+
+    for source in a:sources
+        call s:copy(source, a:dest)
+    endfor
+endfunction
+
+function! s:copy(source, dest)
+    let source = a:source
+    let dest = a:dest
+    if has('win32') || has('win64')
+        let source = file_explorer#ToWindowsPath(source)
+        let dest = file_explorer#ToWindowsPath(dest)
+        if isdirectory(source)
+            let execute_command = 'xcopy /s /e /q /i /y'
+            let source = source[0:-2]
+            let dest = dest . fnamemodify(source, ':t')
+        else
+            let execute_command = 'xcopy /y /q'
+        endif
+    else
+        let execute_command = 'cp -rf'
+    endif
+
+    echo execute_command . ' ' . source . ' ' . dest
+    call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest ' > nul', {'out_io': 'null'})
+endfunction
+
 function! file_explorer#ExecuteFile()
     let target = file_explorer#GetPath()
     if has('win32') || has('win64')
         let execute_command = 'start'
-        let target = substitute(target, '/', '\', 'g')
+        let target = file_explorer#ToWindowsPath(target)
     elseif has('mac')
         let execute_command = 'open'
     else
