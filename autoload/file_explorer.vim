@@ -132,7 +132,7 @@ function! s:copy(source, dest)
     endif
 
     echo execute_command . ' ' . source . ' ' . dest
-    call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest ' > nul', {'out_io': 'null'})
+    call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest . ' > nul', {'out_io': 'null'})
 endfunction
 
 function! file_explorer#ExecuteFile()
