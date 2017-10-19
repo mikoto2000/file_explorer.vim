@@ -133,6 +133,9 @@ function! s:copy(source, dest)
 
     echo execute_command . ' ' . source . ' ' . dest
     call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest . ' > nul', {'out_io': 'null'})
+
+    " ファイルリスト更新
+    call file_explorer#UpdateBuffer('')
 endfunction
 
 function! file_explorer#ExecuteFile()
