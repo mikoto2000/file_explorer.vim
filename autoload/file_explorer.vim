@@ -132,9 +132,10 @@ function! s:copy(source, dest)
     endif
 
     echo execute_command . ' ' . source . ' ' . dest
-    call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest . ' > nul', {'out_io': 'null'})
+    call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest . ' > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#copy_cb'})
+endfunction
 
-    " ファイルリスト更新
+function! file_explorer#copy_cb(job, status)
     call file_explorer#UpdateBuffer('')
 endfunction
 
