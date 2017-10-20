@@ -5,6 +5,7 @@ augroup file_explorer
     autocmd FileType file_explorer nnoremap <buffer> <Enter> :call file_explorer#OpenFileOrDirectory()<Enter>
     autocmd FileType file_explorer nnoremap <buffer> h :call file_explorer#MoveUpperDirectory()<Enter>
     autocmd FileType file_explorer nnoremap <buffer> c :call file_explorer#LcdCurrent()<Enter>
+    autocmd FileType file_explorer nnoremap <buffer> D :call file_explorer#Delete([file_explorer#GetPath()])<Enter>
     autocmd FileType file_explorer nnoremap <buffer> % :call file_explorer#CreateFile()<Enter>
     autocmd FileType file_explorer nnoremap <buffer> d :call file_explorer#CreateDirectory()<Enter>
     autocmd FileType file_explorer nnoremap <buffer> x :call file_explorer#ExecuteFile()<Enter>
@@ -18,5 +19,6 @@ augroup file_explorer
     autocmd FileType file_explorer nnoremap <buffer> mu :let b:file_explorer_source = []<Enter>
             \:echo b:file_explorer_source<Enter>
     autocmd FileType file_explorer nnoremap <buffer> mc :call file_explorer#Copy(b:file_explorer_source, b:file_explorer_dest)<Enter>
+    autocmd FileType file_explorer nnoremap <buffer> md :call file_explorer#Delete(b:file_explorer_source)<Enter>
 augroup END
 

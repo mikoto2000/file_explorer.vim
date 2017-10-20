@@ -138,6 +138,36 @@ function! file_explorer#copy_cb(job, status)
     call file_explorer#UpdateBuffer('')
 endfunction
 
+function! file_explorer#Delete(sources)
+    let user_input = input("Delete these files : \n- " . join(a:sources, "\n- ") . "\nReallydelete? y/n > ")
+
+    if user_input == "y"
+        for source in a:sources
+            call s:delete(source)
+        endfor
+    endif
+endfunction
+
+function! s:delete(target)
+    let target = a:target
+    if has('win32') || has('win64')
+        let target = file_explorer#ToWindowsPath(target)
+        if isdirectory(target)
+            let execute_command = 'rmdir /s /q'
+        else
+            let execute_command = 'del /q'
+        endif
+    else
+        let execute_command = 'rm -rf'
+    endif
+
+    call job_start("cmd /c " . execute_command . ' ' . target . ' > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#delete_cb'})
+endfunction
+
+function! file_explorer#delete_cb(job, status)
+    call file_explorer#UpdateBuffer('')
+endfunction
+
 function! file_explorer#ExecuteFile()
     let target = file_explorer#GetPath()
     if has('win32') || has('win64')
