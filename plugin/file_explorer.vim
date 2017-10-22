@@ -19,6 +19,7 @@ augroup file_explorer
     autocmd FileType file_explorer nnoremap <buffer> mu :let b:file_explorer_source = []<Enter>
             \:echo b:file_explorer_source<Enter>
     autocmd FileType file_explorer nnoremap <buffer> mc :call file_explorer#Copy(b:file_explorer_source, b:file_explorer_dest)<Enter>
+    autocmd FileType file_explorer nnoremap <buffer> mm :call file_explorer#Move(b:file_explorer_source, b:file_explorer_dest)<Enter>
     autocmd FileType file_explorer nnoremap <buffer> md :call file_explorer#Delete(b:file_explorer_source)<Enter>
 augroup END
 

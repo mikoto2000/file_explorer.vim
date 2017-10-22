@@ -71,6 +71,9 @@
 |mc|                                               *mc*
 			source に登録したファイルを dest にコピーします。
 
+|mm|                                               *mm*
+			source に登録したファイルを dest に移動します。
+
 |md|                                               *md*
 			source に登録したファイル削除します。
 

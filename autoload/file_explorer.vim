@@ -138,6 +138,43 @@ function! file_explorer#copy_cb(job, status)
     call file_explorer#UpdateBuffer('')
 endfunction
 
+function! file_explorer#Move(sources, dest)
+    if a:dest == ''
+        echo 'file_explorer: dest is empty.'
+        return
+    endif
+
+    let user_input = input("Move these files : \n- " . join(a:sources, "\n- ") . "\nTo : \n- " . a:dest . "\nReally move? y/n > ")
+
+    for source in a:sources
+        call s:move(source, a:dest)
+    endfor
+endfunction
+
+function! s:move(source, dest)
+    let source = a:source
+    let dest = a:dest
+    if has('win32') || has('win64')
+        let source = file_explorer#ToWindowsPath(source)
+        let dest = file_explorer#ToWindowsPath(dest)
+        if isdirectory(source)
+            let execute_command = 'move /y'
+            let source = source[0:-2]
+            let dest = dest . fnamemodify(source, ':t')
+        else
+            let execute_command = 'xcopy /y'
+        endif
+    else
+        let execute_command = 'mv -f'
+    endif
+
+    call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest . ' > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#move_cb'})
+endfunction
+
+function! file_explorer#move_cb(job, status)
+    call file_explorer#UpdateBuffer('')
+endfunction
+
 function! file_explorer#Delete(sources)
     let user_input = input("Delete these files : \n- " . join(a:sources, "\n- ") . "\nReallydelete? y/n > ")
 

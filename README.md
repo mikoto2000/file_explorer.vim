@@ -33,6 +33,7 @@ noremap <Leader>e <Esc>:call file_explorer#OpenFileExplorer(getcwd())<Enter>
 - `mf` : カーソル下のファイルを source に登録します。
 - `mu` : source を空にします。
 - `mc` : source に登録したファイルを dest にコピーします。
+- `mm` : source に登録したファイルを dest に移動します。
 - `md` : source に登録したファイルを削除します。
 
 
