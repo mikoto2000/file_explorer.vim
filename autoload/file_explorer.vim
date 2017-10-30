@@ -30,7 +30,7 @@ endfunction
 
 function! file_explorer#UpdateBuffer(dir)
     setlocal modifiable
-    silent normal ggVGd
+    silent normal ggVG"_d
     if a:dir != ''
         let s:file_browser_pwd = file_explorer#NormalizePath(s:file_browser_pwd . a:dir)
     endif
