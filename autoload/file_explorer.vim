@@ -73,7 +73,7 @@ function! file_explorer#OpenDirectory(target)
 endfunction
 
 function! file_explorer#OpenFile(target)
-    execute 'e ' . s:file_browser_pwd . a:target
+    execute 'e ' . substitute(s:file_browser_pwd . a:target, '%', '\\%', 'g')
 endfunction
 
 function! file_explorer#GetPath()
@@ -86,7 +86,7 @@ endfunction
 
 function! file_explorer#CreateFile()
     let file_name = input("File Name: ")
-    execute ":e " . s:file_browser_pwd .  file_name
+    execute ":e " . substitute(s:file_browser_pwd . file_name, '%', '\\%', 'g')
 endfunction
 
 function! file_explorer#CreateDirectory()
