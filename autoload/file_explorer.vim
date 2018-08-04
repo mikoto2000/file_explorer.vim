@@ -157,12 +157,10 @@ function! s:move(source, dest)
     if has('win32') || has('win64')
         let source = file_explorer#ToWindowsPath(source)
         let dest = file_explorer#ToWindowsPath(dest)
+        let execute_command = 'move /y'
         if isdirectory(source)
-            let execute_command = 'move /y'
             let source = source[0:-2]
             let dest = dest . fnamemodify(source, ':t')
-        else
-            let execute_command = 'xcopy /y'
         endif
     else
         let execute_command = 'mv -f'
