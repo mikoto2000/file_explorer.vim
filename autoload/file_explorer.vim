@@ -7,11 +7,22 @@ function! file_explorer#OpenFileExplorer(path)
     let s:caller_window_id = win_getid()
 
     " 新しいバッファを作成
-    if bufexists(bufnr('__FILE_BROWSER_FILE_LIST__'))
+    let browser_bufnr = bufnr('__FILE_BROWSER_FILE_LIST__')
+    let current_tabpage_buf_list = tabpagebuflist()
+    " カレントタブページに映っているか確認
+    if match(current_tabpage_buf_list, browser_bufnr) >= 0
+        " 映っていればそのバッファに移動
+        " タブに映っているのだから必ずヒットするはず
+        let winid = win_findbuf(browser_bufnr)[0]
+        call win_gotoid(winid)
+    else
+        " 映っていなかったら wipeout して作り直し
+        " __FILE_BROWSER_FILE_LIST__ しか表示していないタブがあった場合
+        " タブ自体が削除されてしまうけれど仕方がないとしよう。
         bwipeout! __FILE_BROWSER_FILE_LIST__
+        silent hide noswap enew
+        silent file `='__FILE_BROWSER_FILE_LIST__'`
     endif
-    silent hide noswap enew
-    silent file `='__FILE_BROWSER_FILE_LIST__'`
 
     " ファイルリスト取得
     call file_explorer#UpdateBuffer('')
