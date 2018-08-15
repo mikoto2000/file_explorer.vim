@@ -144,7 +144,7 @@ function! s:copy(source, dest)
         let execute_command = 'cp -rf'
     endif
 
-    call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest . ' > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#copy_cb'})
+    call job_start("cmd /c " . execute_command . ' "' . source . '" "' . dest . '" > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#copy_cb'})
 endfunction
 
 function! file_explorer#copy_cb(job, status)
@@ -179,7 +179,7 @@ function! s:move(source, dest)
         let execute_command = 'mv -f'
     endif
 
-    call job_start("cmd /c " . execute_command . ' ' . source . ' ' . dest . ' > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#move_cb'})
+    call job_start("cmd /c " . execute_command . ' "' . source . '" "' . dest . '" > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#move_cb'})
 endfunction
 
 function! file_explorer#move_cb(job, status)
@@ -209,7 +209,7 @@ function! s:delete(target)
         let execute_command = 'rm -rf'
     endif
 
-    call job_start("cmd /c " . execute_command . ' ' . target . ' > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#delete_cb'})
+    call job_start("cmd /c " . execute_command . ' "' . target . '" > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#delete_cb'})
 endfunction
 
 function! file_explorer#delete_cb(job, status)
