@@ -19,7 +19,9 @@ function! file_explorer#OpenFileExplorer(path)
         " 映っていなかったら wipeout して作り直し
         " __FILE_BROWSER_FILE_LIST__ しか表示していないタブがあった場合
         " タブ自体が削除されてしまうけれど仕方がないとしよう。
-        bwipeout! __FILE_BROWSER_FILE_LIST__
+        if bufexists(browser_bufnr)
+            bwipeout! __FILE_BROWSER_FILE_LIST__
+        endif
         silent hide noswap enew
         silent file `='__FILE_BROWSER_FILE_LIST__'`
     endif
