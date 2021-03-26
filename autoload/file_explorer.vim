@@ -10,7 +10,7 @@ function! file_explorer#OpenFileExplorer(path)
     let browser_bufnr = bufnr('__FILE_BROWSER_FILE_LIST__')
     let current_tabpage_buf_list = tabpagebuflist()
     " カレントタブページに映っているか確認
-    if match(current_tabpage_buf_list, browser_bufnr) >= 0
+    if match(current_tabpage_buf_list, '^' . browser_bufnr . '$') >= 0
         " 映っていればそのバッファに移動
         " タブに映っているのだから必ずヒットするはず
         let winid = win_findbuf(browser_bufnr)[0]
