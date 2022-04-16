@@ -1,5 +1,17 @@
 let s:cursor_position = {}
 
+if has('win32') || has('win64')
+    let s:shell_command = "cmd /c "
+else
+    let s:shell_command = ""
+endif
+
+if has('win32') || has('win64')
+    let s:nullout = " > nul"
+else
+    let s:nullout = ""
+endif
+
 function! file_explorer#OpenFileExplorer(path)
     let s:file_browser_pwd = file_explorer#NormalizePath(a:path)
 
@@ -144,7 +156,7 @@ function! s:copy(source, dest)
         let execute_command = 'cp -rf'
     endif
 
-    call job_start("cmd /c " . execute_command . ' "' . source . '" "' . dest . '" > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#copy_cb'})
+    call job_start(s:shell_command . execute_command . ' "' . source . '" "' . dest . '"' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#copy_cb'})
 endfunction
 
 function! file_explorer#copy_cb(job, status)
@@ -179,7 +191,7 @@ function! s:move(source, dest)
         let execute_command = 'mv -f'
     endif
 
-    call job_start("cmd /c " . execute_command . ' "' . source . '" "' . dest . '" > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#move_cb'})
+    call job_start(s:shell_command . execute_command . ' "' . source . '" "' . dest . '"' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#move_cb'})
 endfunction
 
 function! file_explorer#move_cb(job, status)
@@ -209,7 +221,7 @@ function! s:delete(target)
         let execute_command = 'rm -rf'
     endif
 
-    call job_start("cmd /c " . execute_command . ' "' . target . '" > nul', {'out_io': 'null', 'exit_cb': 'file_explorer#delete_cb'})
+    call job_start(s:shell_command . execute_command . ' "' . target . '" ' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#delete_cb'})
 endfunction
 
 function! file_explorer#delete_cb(job, status)
