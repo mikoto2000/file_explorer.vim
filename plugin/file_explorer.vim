@@ -23,3 +23,13 @@ augroup file_explorer
     autocmd FileType file_explorer nnoremap <buffer> md :call file_explorer#Delete(b:file_explorer_source)<Enter>
 augroup END
 
+if has('nvim')
+  function! file_explorer#job_start(cmd, cb)
+    let Callback = function(a:cb)
+    call jobstart(a:cmd, {'on_exit': {j,d,e->Callback(v:null,v:null)}})
+  endfunction
+else
+  function! file_explorer#job_start(cmd, cb)
+    call job_start(a:cmd, {'out_io': 'null', 'exit_cb': a:cb})
+  endfunction
+endif

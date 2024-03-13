@@ -1,13 +1,13 @@
 let s:cursor_position = {}
 
 if has('win32') || has('win64')
-    let s:shell_command = "cmd /c "
+    let s:shell_command = ['pwsh', '-Command']
 else
-    let s:shell_command = ""
+    let s:shell_command = []
 endif
 
 if has('win32') || has('win64')
-    let s:nullout = " > nul"
+    let s:nullout = ['>',  'nul']
 else
     let s:nullout = ""
 endif
@@ -156,7 +156,7 @@ function! s:copy(source, dest)
         let execute_command = 'cp -rf'
     endif
 
-    call job_start(s:shell_command . execute_command . ' "' . source . '" "' . dest . '"' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#copy_cb'})
+    call file_explorer#job_start(s:shell_command . execute_command . ' "' . source . '" "' . dest . '"' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#copy_cb'})
 endfunction
 
 function! file_explorer#copy_cb(job, status)
@@ -191,7 +191,7 @@ function! s:move(source, dest)
         let execute_command = 'mv -f'
     endif
 
-    call job_start(s:shell_command . execute_command . ' "' . source . '" "' . dest . '"' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#move_cb'})
+    call file_explorer#job_start(s:shell_command . execute_command . ' "' . source . '" "' . dest . '"' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#move_cb'})
 endfunction
 
 function! file_explorer#move_cb(job, status)
@@ -212,16 +212,12 @@ function! s:delete(target)
     let target = a:target
     if has('win32') || has('win64')
         let target = file_explorer#ToWindowsPath(target)
-        if isdirectory(target)
-            let execute_command = 'rmdir /s /q'
-        else
-            let execute_command = 'del /q'
-        endif
+        let execute_command = ['Remove-Item', '-Recurse']
     else
-        let execute_command = 'rm -rf'
+        let execute_command = ['rm', '-rf']
     endif
 
-    call job_start(s:shell_command . execute_command . ' "' . target . '" ' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#delete_cb'})
+    call file_explorer#job_start(s:shell_command + execute_command + [target],  'file_explorer#delete_cb')
 endfunction
 
 function! file_explorer#delete_cb(job, status)
