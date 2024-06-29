@@ -9,7 +9,7 @@ endif
 if has('win32') || has('win64')
     let s:nullout = ['>',  'nul']
 else
-    let s:nullout = ""
+    let s:nullout = []
 endif
 
 function! file_explorer#OpenFileExplorer(path)
@@ -146,17 +146,17 @@ function! s:copy(source, dest)
         let source = file_explorer#ToWindowsPath(source)
         let dest = file_explorer#ToWindowsPath(dest)
         if isdirectory(source)
-            let execute_command = 'xcopy /s /e /q /i /y'
+            let execute_command = ["Copy-Item", "-Recurse", "-Force"]
             let source = source[0:-2]
             let dest = dest . fnamemodify(source, ':t')
         else
-            let execute_command = 'xcopy /y /q'
+            let execute_command = ["Copy-Item", "-Force"]
         endif
     else
         let execute_command = 'cp -rf'
     endif
 
-    call file_explorer#job_start(s:shell_command . execute_command . ' "' . source . '" "' . dest . '"' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#copy_cb'})
+    call file_explorer#job_start(s:shell_command + execute_command + [source] + [dest] + s:nullout, 'file_explorer#move_cb')
 endfunction
 
 function! file_explorer#copy_cb(job, status)
@@ -182,16 +182,17 @@ function! s:move(source, dest)
     if has('win32') || has('win64')
         let source = file_explorer#ToWindowsPath(source)
         let dest = file_explorer#ToWindowsPath(dest)
-        let execute_command = 'move /y'
+        let execute_command = ["Move-Item", "-Force"]
         if isdirectory(source)
             let source = source[0:-2]
             let dest = dest . fnamemodify(source, ':t')
         endif
     else
-        let execute_command = 'mv -f'
+        let execute_command = ["mv", "-f"]
     endif
 
-    call file_explorer#job_start(s:shell_command . execute_command . ' "' . source . '" "' . dest . '"' . s:nullout, {'out_io': 'null', 'exit_cb': 'file_explorer#move_cb'})
+    call file_explorer#job_start(s:shell_command + execute_command + [source] + [dest] + s:nullout, 'file_explorer#move_cb')
+
 endfunction
 
 function! file_explorer#move_cb(job, status)
