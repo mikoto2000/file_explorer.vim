@@ -153,7 +153,7 @@ function! s:copy(source, dest)
             let execute_command = ["Copy-Item", "-Force"]
         endif
     else
-        let execute_command = 'cp -rf'
+        let execute_command = ["cp", "-rf"]
     endif
 
     call file_explorer#job_start(s:shell_command + execute_command + [source] + [dest] + s:nullout, 'file_explorer#move_cb')
