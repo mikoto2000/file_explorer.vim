@@ -199,6 +199,38 @@ function! file_explorer#move_cb(job, status)
     call file_explorer#UpdateBuffer('')
 endfunction
 
+function! file_explorer#Rename(source)
+
+    let l:dest = input("Rename to > ", a:source)
+
+    if l:dest != ""
+        call s:rename(a:source, l:dest)
+    endif
+endfunction
+
+function! s:rename(source, dest)
+    let source = a:source
+    let dest = a:dest
+    if has('win32') || has('win64')
+        let source = file_explorer#ToWindowsPath(source)
+        let dest = file_explorer#ToWindowsPath(dest)
+        let execute_command = ["Move-Item"]
+        if isdirectory(source)
+            let source = source[0:-2]
+            let dest = dest . fnamemodify(source, ':t')
+        endif
+    else
+        let execute_command = ["mv"]
+    endif
+
+    call file_explorer#job_start(s:shell_command + execute_command + [source] + [dest] + s:nullout, 'file_explorer#rename_cb')
+
+endfunction
+
+function! file_explorer#rename_cb(job, status)
+    call file_explorer#UpdateBuffer('')
+endfunction
+
 function! file_explorer#Delete(sources)
     let user_input = input("Delete these files : \n- " . join(a:sources, "\n- ") . "\nReallydelete? y/n > ")
 
