@@ -1,7 +1,11 @@
 let s:cursor_position = {}
 
 if has('win32') || has('win64')
-    let s:shell_command = ['pwsh', '-Command']
+    if executable('pwsh')
+        let s:shell_command = ['pwsh', '-Command']
+    else
+        let s:shell_command = ['powershell', '-NoProfile', '-Command']
+    endif
 else
     let s:shell_command = []
 endif
@@ -274,4 +278,3 @@ endfunction
 function! file_explorer#NormalizePath(path)
     return substitute(fnamemodify(a:path, ':p'), '\', '/', 'g')
 endfunction
-
